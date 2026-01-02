@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "218605475716",
+    "project_id": "horas-v3-e7265",
+    "storage_bucket": "horas-v3-e7265.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:218605475716:android:f939998e1c787e06832fd1",
+        "android_client_info": {
+          "package_name": "com.example.horas_v3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ-4tEv7vfKeKtiFm3WOMPzzkvQWvtTgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
