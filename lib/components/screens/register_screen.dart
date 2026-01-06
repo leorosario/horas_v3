@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:horas_v3/components/screens/register_screen.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  RegisterScreen({super.key});
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
+  final TextEditingController _confirmaSenhaController = TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,29 +29,34 @@ class LoginScreen extends StatelessWidget {
                     FlutterLogo(size: 76),
                     SizedBox(height: 16),
                     TextField(
+                      controller: _nomeController,
+                      decoration: InputDecoration(hintText: "Nome"),
+                    ),
+                    SizedBox(height: 16),
+                    TextField(
                       controller: _emailController,
-                      decoration: InputDecoration(hintText: 'E-mail'),
+                      decoration: InputDecoration(hintText: "E-mail"),
                     ),
                     SizedBox(height: 16),
                     TextField(
                       obscureText: true,
                       controller: _senhaController,
-                      decoration: InputDecoration(
-                        hintText: 'Senha'
-                      ),
+                      decoration: InputDecoration(hintText: "Senha"),
                     ),
                     SizedBox(height: 16),
-                    ElevatedButton(onPressed: () {}, child: Text('Entrar')),
+                    TextField(
+                       obscureText: true,
+                      controller: _confirmaSenhaController,
+                      decoration: InputDecoration(hintText: "Confirmar Senha"),
+                    ),
                     SizedBox(height: 16),
-                    ElevatedButton(onPressed: () {}, child: Text('Entrar com google')),
+                    ElevatedButton(onPressed: () {
+
+                    }, child: Text("Cadastrar")),
                     SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
-                      }, child: Text('Ainda não tem uma conta, crie uma conta.'))
                   ],
                 ),
-              ),
+              )
             ],
           ),
         ),
