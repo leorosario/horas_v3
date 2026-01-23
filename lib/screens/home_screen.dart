@@ -22,6 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    refresh();
   }
 
   @override
@@ -64,7 +66,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         ListTile(
-                          onLongPress: () {},
+                          onLongPress: () {
+                            showFormModal(model: model);
+                          },
                           onTap: () {},
                           leading: Icon(Icons.list_alt_rounded, size: 56),
                           title: Text(
@@ -160,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   firestore.collection(widget.user.uid).doc(hour.id).set(hour.toMap());
 
-                  //refresh();
+                  refresh();
                   Navigator.pop(context);
                 }, child: Text(confirmationButton)),
               ],
@@ -173,8 +177,26 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   void remove(Hour model) {
     firestore.collection(widget.user.uid).doc(model.id).delete();
-    //refresh();
+    refresh();
   }
+
+  
+  void refresh() async {
+    final temp = <Hour>[];
+
+    final snapshot = await firestore.collection(widget.user.uid).get();
+    for (var doc in snapshot.docs) {
+      // Se Hour.fromMap não cuida do id, injete aqui:
+      final data = doc.data();
+      data['id'] = doc.id; // <- injeta o id do documento no map
+      temp.add(Hour.fromMap(data));
+    }
+
+    setState(() {
+      listHours = temp;
+    });
+  }
+
 }
 
 
