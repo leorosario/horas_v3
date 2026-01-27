@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:horas_v3/screens/register_screen.dart';
+import 'package:horas_v3/screens/reset_password_moda.dart';
 import 'package:horas_v3/services/auth_service.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -59,7 +60,14 @@ class LoginScreen extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
-                      }, child: Text('Ainda não tem uma conta, crie uma conta.'))
+                      }, child: Text('Ainda não tem uma conta, crie uma conta.')
+                    ),
+                    TextButton(onPressed: () {
+                      showDialog(context: context, 
+                      builder: (BuildContext context){
+                        return PasswordresetModal();
+                      });
+                    }, child: Text('Esqueceu sua senha?')),
                   ],
                 ),
               ),
