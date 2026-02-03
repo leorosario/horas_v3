@@ -64,6 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '218605475716',
     projectId: 'horas-v3-e7265',
     storageBucket: 'horas-v3-e7265.firebasestorage.app',
+    iosClientId: '218605475716-qmsfsp8n260gmlea5i5cutvmv55vpdng.apps.googleusercontent.com',
     iosBundleId: 'com.example.horasV3',
   );
 
@@ -73,6 +74,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '218605475716',
     projectId: 'horas-v3-e7265',
     storageBucket: 'horas-v3-e7265.firebasestorage.app',
+    iosClientId: '218605475716-qmsfsp8n260gmlea5i5cutvmv55vpdng.apps.googleusercontent.com',
     iosBundleId: 'com.example.horasV3',
   );
 

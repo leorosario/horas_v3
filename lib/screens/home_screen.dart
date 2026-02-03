@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:horas_v3/components/menu.dart';
 import 'package:horas_v3/helpers/hour_helper.dart';
@@ -22,6 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    setupFCM();
 
     refresh();
   }
@@ -85,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  showFormModal({Hour? model}){
+  showFormModal({Hour? model}) {
     String title = "Adcionar";
     String confirmationButton = "Salvar";
     String skipButton = "Cancelar";
@@ -96,91 +99,111 @@ class _HomeScreenState extends State<HomeScreen> {
     final minutosMaskFormatter = MaskTextInputFormatter(mask: "##:##");
     TextEditingController descricaoController = TextEditingController();
 
-    if(model != null){
+    if (model != null) {
       title = "Editando";
       dataController.text = model.data;
       minutosController.text = HourHelper.minutesToHours(model.minutos);
-      if(model.descricao != null){
+      if (model.descricao != null) {
         descricaoController.text = model.descricao!;
       }
     }
 
-    showModalBottomSheet(context: context, shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.vertical(top: Radius.circular(24),),), 
-    builder: (context){
-      return Container(
-        height: MediaQuery.of(context).size.height,
-        padding: EdgeInsets.all(32),
-        child: ListView(
-          children: [
-            Text(title, style: Theme.of(context).textTheme.headlineLarge,),
-            TextFormField(
-              controller: dataController,
-              keyboardType: TextInputType.datetime,
-              decoration: InputDecoration(
-                hintText: '01/01/2024',
-                labelText: 'Data',                
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height,
+          padding: EdgeInsets.all(32),
+          child: ListView(
+            children: [
+              Text(title, style: Theme.of(context).textTheme.headlineLarge),
+              TextFormField(
+                controller: dataController,
+                keyboardType: TextInputType.datetime,
+                decoration: InputDecoration(
+                  hintText: '01/01/2024',
+                  labelText: 'Data',
+                ),
+                inputFormatters: [dataMaskFormatter],
               ),
-              inputFormatters: [dataMaskFormatter],
-            ),
-            SizedBox(height: 16,),
-            TextFormField(
-              controller: minutosController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: '00:00',
-                labelText: 'Horas trabalhadas',
+              SizedBox(height: 16),
+              TextFormField(
+                controller: minutosController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: '00:00',
+                  labelText: 'Horas trabalhadas',
+                ),
+                inputFormatters: [minutosMaskFormatter],
               ),
-              inputFormatters: [minutosMaskFormatter],
-            ),
-            SizedBox(height: 16,),
-            
-            TextFormField(
-              controller: descricaoController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                hintText: 'Lembrete do que você fez', 
-                labelText: 'Descrição'
-              ), // InputDecoration
-            ), // TextFormField
+              SizedBox(height: 16),
 
-            SizedBox(height: 16,),           
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(onPressed: (){
-                  Navigator.pop(context);
-                }, child: Text(skipButton)),
-                SizedBox(width: 16,),
-                ElevatedButton(onPressed: (){
-                  Hour hour = Hour(id: const Uuid().v1(), data: dataController.text, minutos: HourHelper.hoursToMinutos(minutosController.text));
+              TextFormField(
+                controller: descricaoController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  hintText: 'Lembrete do que você fez',
+                  labelText: 'Descrição',
+                ), // InputDecoration
+              ), // TextFormField
 
-                  if(descricaoController.text != ""){
-                    hour.descricao = descricaoController.text;
-                  }
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(skipButton),
+                  ),
+                  SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Hour hour = Hour(
+                        id: const Uuid().v1(),
+                        data: dataController.text,
+                        minutos: HourHelper.hoursToMinutos(
+                          minutosController.text,
+                        ),
+                      );
 
-                  if(model != null){
-                    hour.id = model.id;
-                  }
+                      if (descricaoController.text != "") {
+                        hour.descricao = descricaoController.text;
+                      }
 
-                  firestore.collection(widget.user.uid).doc(hour.id).set(hour.toMap());
+                      if (model != null) {
+                        hour.id = model.id;
+                      }
 
-                  refresh();
-                  Navigator.pop(context);
-                }, child: Text(confirmationButton)),
-              ],
-            ),
-            SizedBox(height: 180,)
-          ],
-        ),
-      );
-    },);
+                      firestore
+                          .collection(widget.user.uid)
+                          .doc(hour.id)
+                          .set(hour.toMap());
+
+                      refresh();
+                      Navigator.pop(context);
+                    },
+                    child: Text(confirmationButton),
+                  ),
+                ],
+              ),
+              SizedBox(height: 180),
+            ],
+          ),
+        );
+      },
+    );
   }
+
   void remove(Hour model) {
     firestore.collection(widget.user.uid).doc(model.id).delete();
     refresh();
   }
 
-  
   void refresh() async {
     final temp = <Hour>[];
 
@@ -196,7 +219,42 @@ class _HomeScreenState extends State<HomeScreen> {
       listHours = temp;
     });
   }
-
 }
 
+void setupFCM() async {
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print(fcmToken);
 
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('User granted permission');
+  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    print('User granted provisional permission');
+  } else {
+    print('User declined or has not accepted permission');
+  }
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print('### A new onMessageOpenedApp event was published!');
+  });
+}

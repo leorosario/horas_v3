@@ -12,7 +12,12 @@
           "package_name": "com.example.horas_v3"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "218605475716-rou5a28hnfl9pttocpr8gdbqc4nai4qj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDQ-4tEv7vfKeKtiFm3WOMPzzkvQWvtTgM"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "218605475716-rou5a28hnfl9pttocpr8gdbqc4nai4qj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "218605475716-qmsfsp8n260gmlea5i5cutvmv55vpdng.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.horasV3"
+              }
+            }
+          ]
         }
       }
     }
